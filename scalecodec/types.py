@@ -1401,6 +1401,26 @@ class GenericMultiAddress(Enum):
         ["Address20", "H160"],
       ]
 
+    def __init__(self, data, **kwargs):
+        self.account_length = None
+        self.account_id = None
+        self.account_index = None
+        self.account_idx = None
+        super().__init__(data, **kwargs)
+
+    def process(self):
+        value = super().process()
+        self.account_length = self.index
+        if self.index == 0:
+            value = list(value.values())[0]
+            self.account_id = value[2:]
+            return value
+        elif self.index == 1:
+            self.account_index = list(value.values())[0]
+            return self.account_index
+        else:
+            raise NotImplementedError("Address type not yet supported")
+
     def process_encode(self, value):
 
         if type(value) == str:
